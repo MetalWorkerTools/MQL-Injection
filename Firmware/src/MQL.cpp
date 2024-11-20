@@ -1,4 +1,4 @@
-#define MQL_VERSION "1.0"
+#define MQL_VERSION "1.1"
 #include <Arduino.h>
 #include "clsPin.h"
 #include <U8g2lib.h>
@@ -58,11 +58,12 @@ u8g2TextBox ModeLarge(&OledDisplay, 0, 40, 32, 32, u8g2_font_spleen16x32_mr, "",
 u8g2TextBox InjectionTimeLarge(&ModeLarge, 32, 0, 96, 32, "", "");
 
 u8g2TextBox Counter(&Setpoint, 0, 8, 48, 8, "Cnt: ", "");
-u8g2TextBox Debug(&Counter, 48, 0, 80, 8, "PinState: ", "");
+u8g2TextBox Debug(&Counter, 48, 0, 80, 8, "", "");
 
 AiEsp32RotaryEncoder RotaryEncoder = AiEsp32RotaryEncoder(ROTARY_A_GPIO, ROTARY_B_GPIO, ROTARY_SW_GPIO, ROTARY_VCC_P, ROTARY_STEPS);
 
 volatile int32_t Count = 0;
+String DebugString = "--";
 // volatile long SetpointRequested = 10;
 volatile long InjectionSetpoint = MIN_INJECTION_TIME;
 volatile bool MistUpdateRequest = false;
@@ -79,7 +80,7 @@ Preferences FlashData;
 clsPin PinLed(LED_GPIO, OUTPUT, LED_ACTIVE, false, "L", "l");
 clsPin PinRotaryA(ROTARY_A_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "A", "a");
 clsPin PinRotaryB(ROTARY_B_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "B", "b");
-clsPin PinRotarySW(ROTARY_SW_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "S", "s",2000);
+clsPin PinRotarySW(ROTARY_SW_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "S", "s", 2000);
 clsPin PinMist(MIST_GPIO, INPUT_PULLUP, MIST_ACTIVE, false, "M", "m");
 clsPin PinCoolant(COOLANT_GPIO, INPUT_PULLUP, COOLANT_ACTIVE, false, "C", "c");
 clsPin PinInjection(INJECTION_GPIO, OUTPUT, INJECTION_ACTIVE, false, "I", "i");
@@ -92,12 +93,23 @@ bool InjectionActive()
   else
     return false;
 }
+bool SystemActive()
+{
+  if (InjectionActive() || PinRelay.IsActive())
+    return true;
+  else
+    return false;
+}
+String GetOnStateStr()
+{
+  if (SystemActive())
+    return "ON";
+  else
+    return "off";
+}
 void ShowOnState()
 {
-  if (InjectionActive())
-    OnState.Show("ON");
-  else
-    OnState.Show("off");
+  OnState.Show(GetOnStateStr());
 }
 void ShowPinState()
 {
@@ -105,10 +117,10 @@ void ShowPinState()
   S = S + PinRotaryA.GetStateStr();
   S = S + PinRotaryB.GetStateStr();
   S = S + PinRotarySW.GetStateStr();
-  S = S + PinMist.GetStateStr();
   S = S + PinCoolant.GetStateStr();
-  S = S + PinInjection.GetStateStr();
+  S = S + PinMist.GetStateStr();
   S = S + PinRelay.GetStateStr();
+  S = S + PinInjection.GetStateStr();
   // S = S + PinLed.GetStateStr();
   PinsState.Show(S);
 }
@@ -122,8 +134,6 @@ void ShowFrequency()
 }
 void ShowMode()
 {
-  // Mode.Show(PinRotarySW.GetPinStateStr());
-  // return;
   switch (ManualMode)
   {
   case ManualModeCoolant:
@@ -139,9 +149,6 @@ void ShowMode()
 }
 void ShowModeLarge()
 {
-#ifdef INJECTION_MODE
-  return;
-#endif
   switch (ManualMode)
   {
   case ManualModeCoolant:
@@ -150,11 +157,22 @@ void ShowModeLarge()
   case ManualModeMist:
     ModeLarge.Show("M");
     break;
+  case ManualModeInjection:
+    ModeLarge.Show("I");
   }
 }
 void ShowSetpoint()
 {
-  Setpoint.Show(0.1 * (double_t)RotaryEncoder.readEncoder(), 6, 1);
+  switch (ManualMode)
+  {
+  case ManualModeCoolant:
+    Setpoint.Show("---");
+    break;
+  case ManualModeMist:
+  case ManualModeInjection:
+    Setpoint.Show(0.1 * (double_t)RotaryEncoder.readEncoder(), 6, 1);
+    break;
+  }
 }
 void ShowCounter()
 {
@@ -162,11 +180,20 @@ void ShowCounter()
 }
 void ShowInjectionActiveTime()
 {
-  InjectionTimeLarge.Show(0.1 * (double_t)InjectionActiveTics, 5, 1);
+  switch (ManualMode)
+  {
+  case ManualModeCoolant:
+    InjectionTimeLarge.Show(GetOnStateStr());
+    break;
+  case ManualModeMist:
+  case ManualModeInjection:
+    InjectionTimeLarge.Show(0.1 * (double_t)InjectionActiveTics, 5, 1);
+    break;
+  }
 }
 void ShowDebug()
 {
-  Debug.Show(PinMist.GetPinStateStr());
+  Debug.Show(DebugString);
 }
 void ShowStatus()
 {
@@ -179,7 +206,7 @@ void ShowStatus()
   ShowModeLarge();
   ShowInjectionActiveTime();
   // ShowCounter();
-  //  ShowDebug();
+  // ShowDebug();
 }
 void CalculateInjectionPeriod()
 {
@@ -201,9 +228,17 @@ void IRAM_ATTR SignalSettingChanged()
 }
 void IRAM_ATTR readEncoderISR()
 {
-  RotaryEncoder.readEncoder_ISR();
-  if (RotaryEncoder.encoderChanged())
-    SignalSettingChanged();
+  switch (ManualMode)
+  {
+  case ManualModeCoolant: // in coolant mode, no rotary knob processing
+    break;
+  case ManualModeMist:
+  case ManualModeInjection:
+    RotaryEncoder.readEncoder_ISR();
+    if (RotaryEncoder.encoderChanged())
+      SignalSettingChanged();
+    break;
+  }
 }
 void SetInjectionActive(bool Active)
 {
@@ -230,42 +265,164 @@ void SetupInjection()
   RotaryEncoder.setEncoderValue(InjectionSetpoint);
   SetInjectionActive(false);
 }
+
+const char *GetSetpointName()
+{
+  switch (ManualMode) // seems names can't be to long
+  {
+  case ManualModeCoolant:
+    return "SpC";
+  case ManualModeMist:
+    return "SpMi";
+  case ManualModeInjection:
+    return "SpI";
+  default:
+    return "SpX"; // Must not get here
+  }
+}
+void ReadSetpoint()
+{
+  // InjectionSetpoint = FlashData.getLong(GetSetpointName(), 0);
+  // RotaryEncoder.setEncoderValue(InjectionSetpoint); // set the encoder to the new value  switch (ManualMode) // seems names can't be to long
+  switch (ManualMode) // seems names can't be to long
+  {
+  case ManualModeCoolant:
+    InjectionSetpoint = FlashData.getLong("SpC", 0);
+    break;
+  case ManualModeMist:
+    InjectionSetpoint = FlashData.getLong("SpM", 0);
+    break;
+  case ManualModeInjection:
+    InjectionSetpoint = FlashData.getLong("SpI", 0);
+    break;
+  }
+  DebugString = InjectionSetpoint;
+  RotaryEncoder.setEncoderValue(InjectionSetpoint);
+  // SetupInjection();
+}
+void WriteSetpoint()
+{
+  // FlashData.putLong(GetSetpointName(), RotaryEncoder.readEncoder());
+  switch (ManualMode) // seems names can't be to long
+  {
+  case ManualModeCoolant:
+    FlashData.putLong("SpC", RotaryEncoder.readEncoder());
+    break;
+  case ManualModeMist:
+    FlashData.putLong("SpM", RotaryEncoder.readEncoder());
+    break;
+  case ManualModeInjection:
+    FlashData.putLong("SpI", RotaryEncoder.readEncoder());
+    break;
+  }
+}
+bool SupportedMode(ManualModes Mode)
+{
+#ifdef MODE_COOLANT
+  if (Mode == ManualModeCoolant)
+    return true;
+#endif
+#ifdef MODE_MIST
+  if (Mode == ManualModeMist)
+    return true;
+#endif
+#ifdef MODE_INJECTION
+  if (Mode == ManualModeInjection)
+    return true;
+#endif
+  return false;
+}
+ManualModes GetFirstSupportedMode(ManualModes ModeCurrent, ManualModes Mode1, ManualModes Mode2, ManualModes ModeDefault)
+{
+  if (SupportedMode(ModeCurrent))
+    return ModeCurrent;
+  if (SupportedMode(Mode1))
+    return Mode1;
+  if (SupportedMode(Mode2))
+    return Mode2;
+  return ModeDefault;
+}
+ManualModes GetNextSupportedMode(ManualModes ModeCurrent, ManualModes Mode1, ManualModes Mode2, ManualModes ModeDefault)
+{
+  return GetFirstSupportedMode(Mode1, Mode2, ModeCurrent, ModeDefault);
+}
+ManualModes GetFirstSupportedMode(ManualModes ModeCurrent)
+{
+  switch (ModeCurrent)
+  {
+  case ManualModeCoolant:
+    return GetFirstSupportedMode(ManualModeCoolant, ManualModeMist, ManualModeInjection, ManualModeCoolant);
+  case ManualModeMist:
+    return GetFirstSupportedMode(ManualModeMist, ManualModeInjection, ManualModeCoolant, ManualModeCoolant);
+  case ManualModeInjection:
+    return GetFirstSupportedMode(ManualModeInjection, ManualModeCoolant, ManualModeMist, ManualModeCoolant);
+  }
+  return ManualModeCoolant; // Should not get here
+}
+ManualModes GetNextSupportedMode(ManualModes ModeCurrent)
+{
+  switch (ModeCurrent)
+  {
+  case ManualModeCoolant:
+    return GetNextSupportedMode(ManualModeCoolant, ManualModeMist, ManualModeInjection, ManualModeCoolant);
+  case ManualModeMist:
+    return GetNextSupportedMode(ManualModeMist, ManualModeInjection, ManualModeCoolant, ManualModeCoolant);
+  case ManualModeInjection:
+    return GetNextSupportedMode(ManualModeInjection, ManualModeCoolant, ManualModeMist, ManualModeCoolant);
+  }
+  return ManualModeCoolant; // Should not get here
+}
+void SetInactive()
+{
+  PinRelay.SetInactive();
+  SetInjectionActive(false);
+}
+void SetActive()
+{
+  SetInactive();
+  switch (ManualMode)
+  {
+  case ManualModeCoolant:
+    PinRelay.SetActive();
+    break;
+  case ManualModeMist:
+    PinRelay.SetActive();
+    SetInjectionActive(true);
+    break;
+  case ManualModeInjection:
+    SetInjectionActive(true);
+    break;
+  }
+}
 void ReadWriteFlashData(bool read)
 {
   long LongValue = 0;
-
   String DBversion = "1.0";
   if (read)
   {
     DBversion = FlashData.getString("DBversion", DBversion);
-    LongValue = FlashData.getLong("RotaryEncoder", 0);
-    InjectionSetpoint = LongValue;
-    LongValue = FlashData.getLong("Mode", ManualModeCoolant);
-    ManualMode = (ManualModes)LongValue;
-    #ifndef INJECTION_MODE
-    if (ManualMode==ManualModeInjection)
-      ManualMode=ManualModeCoolant;
-    #endif
+    ManualMode = (ManualModes)FlashData.getLong("Mode", ManualModeCoolant);
+    ManualMode = GetFirstSupportedMode(ManualMode); // make sure it is a supported mode
+    ReadSetpoint();                                 // read the setpoint for this mode
   }
   else
   {
-    // return; // no saving yet
     FlashData.putString("DBversion", "1.0");
-    FlashData.putLong("RotaryEncoder", RotaryEncoder.readEncoder());
     FlashData.putLong("Mode", ManualMode);
+    WriteSetpoint();
     Count++;
   }
 }
 void SetManualMode(ManualModes NewMode)
 {
+  NewMode = GetFirstSupportedMode(NewMode); // correct the manual mode
   if (ManualMode == NewMode)
-    return; // nothing to change
-#ifdef INJECTION_MODE
-  ManualMode = ManualModeInjection;
-  return;
-#endif
-  ManualMode = NewMode;
-  SignalSettingChanged();
+    return;               // nothing to change
+  ManualMode = NewMode;   // Set the new mode
+  SignalSettingChanged(); // save the changed mode (after 5 seconds)
+  SetInactive();          // Inactivate all relays
+  ReadSetpoint();         // read the last saved setpoint
+  SetupInjection();       // setup the injection
 }
 void SaveSetpointWhenChanged()
 {
@@ -278,6 +435,7 @@ void SaveSetpointWhenChanged()
 }
 void ProcessSetpointUpdateRequest()
 {
+  FlashData.putLong("Mode", ManualMode);
   if (SettingUpdateRequest)
   {
     if (InjectionActive())
@@ -288,54 +446,80 @@ void ProcessSetpointUpdateRequest()
     SettingUpdateRequest = false;
   }
 }
+void ActivateMode(ManualModes Mode)
+{
+  SetInactive();       // start by deactivating all relais
+  SetManualMode(Mode); // Set and correct the mode
+  switch (ManualMode)
+  {
+  case ManualModeCoolant:
+    PinRelay.SetActive();
+    break;
+  case ManualModeMist:
+    PinRelay.SetActive();
+    InjectionSetpoint = RotaryEncoder.readEncoder();
+    CalculateInjectionPeriod();
+    break;
+  case ManualModeInjection:
+    InjectionSetpoint = RotaryEncoder.readEncoder();
+    CalculateInjectionPeriod();
+    break;
+  }
+}
+void SetManualMode(bool CoolantActive, bool MistActive)
+{
+  if ((CoolantActive) && (!MistActive))
+  {
+#ifdef MODE_COOLANT
+    ActivateMode(ManualModeCoolant);
+#endif
+  }
+  else if ((!CoolantActive) && (MistActive))
+  {
+#ifdef MODE_MIST
+    ActivateMode(ManualModeMist);
+#endif
+  }
+  else if ((CoolantActive) && (MistActive))
+  {
+#ifdef MODE_INJECTION
+    ActivateMode(ManualModeInjection);
+#endif
+  }
+  else // set inactive and disable relays
+  {
+    InjectionSetpoint = 0;
+    CalculateInjectionPeriod();
+    SetInactive(); // Inactivate relays
+    return;
+  }
+}
 void ProcessMistPinUpdateRequest()
 {
   switch (PinMist.GetPinState()) // update the SW button status
   {
   case PinStateI:  // InActive
   case PinStateIU: // InActive, comming from unprocessed active
-  {
-    PinMist.SetProcessed();
-    InjectionSetpoint = 0;
-    CalculateInjectionPeriod();
-    PinRelay.SetInactive(); // Inactivate relay
-    break;
-  }
   case PinStateA:  // Active
   case PinStateAU: // Active, comming from unprocessed active
   {
     PinMist.SetProcessed();
-    InjectionSetpoint = RotaryEncoder.readEncoder();
-    CalculateInjectionPeriod();
-    PinRelay.SetActive();          // Activate relay
-    SetManualMode(ManualModeMist); // Adjust the manual mode
+    SetManualMode(PinCoolant.IsActive(), PinMist.IsActive());
     break;
   }
   }
 }
 void ProcessCoolantPinUpdateRequest()
 {
-#ifdef INJECTION_MODE
-  PinRelay.SetInactive(); // Inactivate relay
-  return;
-#endif
   switch (PinCoolant.GetPinState()) // update the SW button status
   {
   case PinStateI:  // InActive
   case PinStateIU: // InActive, comming from unprocessed active
-  {
-    PinCoolant.SetProcessed();
-    InjectionSetpoint = 0; // Inactivate injection
-    CalculateInjectionPeriod();
-    PinRelay.SetInactive(); // Inactivate relay
-    break;
-  }
   case PinStateA:  // Active
   case PinStateAU: // Active, comming from unprocessed active
   {
     PinCoolant.SetProcessed();
-    PinRelay.SetActive();             // Activate relay output
-    SetManualMode(ManualModeCoolant); // Adjust the manual mode
+    SetManualMode(PinCoolant.IsActive(), PinMist.IsActive());
     break;
   }
   }
@@ -408,25 +592,18 @@ void ProcessRotaryButtonUpdateRequest()
       break;
     }
     break;
-  case PinStateS: // Pin is short time active
-    switch (ManualMode)
-    {
-    case ManualModeMist: // Adjust the manual mode:
-      SetManualMode(ManualModeCoolant);
-      break;
-    default:
-      // case ManualModeCoolant:
-      SetManualMode(ManualModeMist);
-      break;
-    }
+  case PinStateS:                                  // Pin is short time active
+    ManualMode = GetNextSupportedMode(ManualMode); // get the next supported mode
+    SetManualMode(ManualMode);
     PinRotarySW.SetProcessed();
   }
 }
 void TestPWM()
 {
-  PinLed.SetupPWM(500,8);
+  PinLed.SetupPWM(500, 8);
   PinLed.SetDutyCycle(200);
-  for(;;) ShowStatus;
+  for (;;)
+    ShowStatus;
 }
 void setup(void)
 {
@@ -453,9 +630,6 @@ void setup(void)
   SetupDebouncing();
   PinLed.Flash(); // # 5 Show progress
   SetupBackGroundTask();
-#ifdef INJECTION_MODE
-  ManualMode = ManualModeInjection;
-#endif
   PinLed.Flash(); // #6 Show progress
   // TestPWM();
 }

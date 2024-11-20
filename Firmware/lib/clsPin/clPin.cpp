@@ -164,7 +164,7 @@ void clsPin::SetPulseTimeUs(uint32_t PulseTimeUs)
     uint32_t DutyCycle = (PeriodTics * PulseTimeUs) / PeriodUs;
     SetDutyCycle(DutyCycle);
 }
-uint8_t IRAM_ATTR clsPin::GetState()
+bool IRAM_ATTR clsPin::IsActive()
 {
     return (GetLevel() == ActiveLevel);
 }
@@ -178,7 +178,7 @@ String clsPin::GetStateStr()
 }
 String clsPin::GetStateStr(String strActive, String strInactive)
 {
-    if (GetState())
+    if (IsActive())
         return strActive;
     else
         return strInactive;
@@ -265,7 +265,7 @@ void clsPin::AttachInterrupt(void (*ISR_callback)(void))
 // }
 void IRAM_ATTR clsPin::ProcessPinActiveISR() // processes the pin active changes to detect a long or short active time
 {
-    if (GetState())
+    if (IsActive())
     {
         lastTimeActive = millis(); // When active, register the last time pin was active
     }
@@ -389,8 +389,8 @@ PinStates IRAM_ATTR clsPin::ProcessStateChange()
 }
 PinStates IRAM_ATTR clsPin::GetPinState()
 {
-    uint8_t LastState = State;                           // save the last state
-    State = GetState();                                  // update the state
+    bool LastState = State;                           // save the last state
+    State = IsActive();                                  // update the state
     if ((State != LastState) || (PinState == PinStateU)) // there is a state change or the first callcall
         PinState = ProcessStateChange();                 // return a pin state change
     if (PinStateStable())                                // If the state is stable

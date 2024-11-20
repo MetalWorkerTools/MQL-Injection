@@ -1,0 +1,6 @@
+Firmware/*.code-workspace
+Firmware/ToDo.txt
+/Firmware/.pio/*.*
+Firmware/.git/*.*
+Firmware/.gitignore
+

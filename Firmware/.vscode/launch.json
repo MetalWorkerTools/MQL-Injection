@@ -37,31 +37,31 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02-Injection-Only/firmware.elf",
-            "projectEnvName": "esp32C3-V02-Injection-Only",
-            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp@8.4.0+2021r2-patch5/bin",
+            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02/firmware.elf",
+            "projectEnvName": "esp32C3-V02",
+            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
                 "type": "PlatformIO",
-                "task": "Pre-Debug (esp32C3-V02-Injection-Only)"
+                "task": "Pre-Debug (esp32C3-V02)"
             }
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02-Injection-Only/firmware.elf",
-            "projectEnvName": "esp32C3-V02-Injection-Only",
-            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp@8.4.0+2021r2-patch5/bin",
+            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02/firmware.elf",
+            "projectEnvName": "esp32C3-V02",
+            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02-Injection-Only/firmware.elf",
-            "projectEnvName": "esp32C3-V02-Injection-Only",
-            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp@8.4.0+2021r2-patch5/bin",
+            "executable": "e:/GitRepositories/MQL/MQL-Injection/Firmware/.pio/build/esp32C3-V02/firmware.elf",
+            "projectEnvName": "esp32C3-V02",
+            "toolchainBinDir": "C:/Users/hfjbu/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
         }

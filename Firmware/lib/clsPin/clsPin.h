@@ -94,7 +94,7 @@ public:
   void SetupPWM(uint32_t Frequency, uint32_t ResolutionBits);
   void SetDutyCycle(uint32_t DutyCycle);
   void SetPulseTimeUs(uint32_t PulseTimeUs);
-  uint8_t IRAM_ATTR GetState();
+  bool IRAM_ATTR IsActive();
   uint8_t IRAM_ATTR GetLevel();
   String GetStateStr(String strActive, String strInactive);
   String GetStateStr();
