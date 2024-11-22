@@ -1,6 +1,5 @@
 # MQL-Injection
-Minimum Quantity Lubrication system based on a car fuel injector and a garden sprayer.
+A Minimum Quantity Lubrication system based on a car fuel injector and a garden sprayer without the need for compressed air.  
 
-Reed the [WiKi](https://github.com/MetalWorkerTools/MQL-Injection/wiki)) for more information
+For more information watch this [Video](https://www.youtube.com/watch?v=ADPWYeUzn9Y) and reed the [WiKi](https://github.com/MetalWorkerTools/MQL-Injection/wiki). 
 
-# This repository is under construction
