@@ -1,4 +1,4 @@
-#define MQL_VERSION "1.1"
+#define MQL_VERSION "1.2"
 #include <Arduino.h>
 #include "clsPin.h"
 #include <U8g2lib.h>
@@ -616,8 +616,8 @@ void setup(void)
   CalculateInjectionPeriod();
   SetupInjection();
   PinLed.Flash(); // #3 Show progress and give powersupply time to get stable
-                  // Seems that pinmodes are changed after i2c is activated.
-  Wire.begin(SDA_PIN, SCL_PIN);
+  // Seems that pinmodes are changed after i2c is activated.
+  Wire.begin(SDA_PIN, SCL_PIN,25000); // Set the clock frequentie to 25 kHz to be able to use longer cables
   PinMist.SetMode();
   PinCoolant.SetMode();
   OledDisplay.begin(); // InjectionSetpoint = 0;// disable injection
