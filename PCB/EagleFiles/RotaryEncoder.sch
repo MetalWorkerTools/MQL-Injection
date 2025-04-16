@@ -434,9 +434,9 @@ Source: www.piher.net .. 04-CI-11v04.pdf</description>
 <label x="33.02" y="58.42" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="SW1" gate="R" pin="C"/>
-<wire x1="99.06" y1="58.42" x2="104.14" y2="58.42" width="0.1524" layer="91"/>
-<label x="104.14" y="58.42" size="1.778" layer="95"/>
+<pinref part="SW1" gate="R" pin="A"/>
+<wire x1="99.06" y1="53.34" x2="104.14" y2="53.34" width="0.1524" layer="91"/>
+<label x="104.14" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="A" class="0">
@@ -446,9 +446,9 @@ Source: www.piher.net .. 04-CI-11v04.pdf</description>
 <label x="33.02" y="55.88" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="SW1" gate="R" pin="A"/>
-<wire x1="99.06" y1="53.34" x2="104.14" y2="53.34" width="0.1524" layer="91"/>
-<label x="104.14" y="53.34" size="1.778" layer="95"/>
+<pinref part="SW1" gate="R" pin="C"/>
+<wire x1="99.06" y1="58.42" x2="104.14" y2="58.42" width="0.1524" layer="91"/>
+<label x="104.14" y="58.42" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

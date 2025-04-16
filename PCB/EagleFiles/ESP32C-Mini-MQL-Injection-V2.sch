@@ -209,23 +209,6 @@ diameter 2.54 mm, horizontal, grid 10.16 mm</description>
 <rectangle x1="2.032" y1="-0.381" x2="3.937" y2="0.381" layer="21"/>
 <rectangle x1="-3.937" y1="-0.381" x2="-2.032" y2="0.381" layer="21"/>
 </package>
-<package name="DO214AC">
-<description>&lt;b&gt;DIODE&lt;/b&gt;</description>
-<wire x1="-2.3" y1="1" x2="2.3" y2="1" width="0.254" layer="51"/>
-<wire x1="2.3" y1="1" x2="2.3" y2="-0.95" width="0.254" layer="51"/>
-<wire x1="2.3" y1="-0.95" x2="-2.3" y2="-0.95" width="0.254" layer="51"/>
-<wire x1="-2.3" y1="-0.95" x2="-2.3" y2="1" width="0.254" layer="51"/>
-<wire x1="-0.8" y1="0" x2="0.25" y2="0.75" width="0.254" layer="21"/>
-<wire x1="0.25" y1="0.75" x2="0.25" y2="-0.7" width="0.254" layer="21"/>
-<wire x1="0.25" y1="-0.7" x2="-0.8" y2="0" width="0.254" layer="21"/>
-<smd name="C" x="-2.05" y="0" dx="1.8" dy="1.7" layer="1"/>
-<smd name="A" x="2.05" y="0" dx="1.8" dy="1.7" layer="1"/>
-<text x="-2.64" y="1.286" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-2.64" y="-2.556" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-<rectangle x1="-2.65" y1="-0.7" x2="-2.4" y2="0.65" layer="51"/>
-<rectangle x1="2.4" y1="-0.7" x2="2.65" y2="0.65" layer="51"/>
-<rectangle x1="-1" y1="-1.05" x2="-0.7" y2="1.05" layer="21"/>
-</package>
 <package name="DO41-18">
 <wire x1="2.032" y1="-1.27" x2="-2.032" y2="-1.27" width="0.1524" layer="21"/>
 <wire x1="2.032" y1="-1.27" x2="2.032" y2="1.27" width="0.1524" layer="21"/>
@@ -291,32 +274,6 @@ diameter 2.54 mm, horizontal, grid 7.62 mm</description>
 <circle x="2.54" y="-4.445" radius="0.635" width="0.127" layer="21"/>
 <wire x1="2.159" y1="-4.445" x2="2.921" y2="-4.445" width="0.127" layer="21"/>
 <text x="-5.715" y="-4.953" size="1.27" layer="51" rot="R270">En</text>
-</package>
-<package name="MDLSTEPDOWNV02H">
-<circle x="4.2672" y="0.1016" radius="0.254" width="0" layer="21"/>
-<pad name="1" x="-2.54" y="0" drill="1.016" shape="long" rot="R90"/>
-<pad name="2" x="0" y="0" drill="1.016" shape="long" rot="R90"/>
-<pad name="3" x="2.54" y="0" drill="1.016" shape="long" rot="R90"/>
-<text x="-1.905" y="11.8618" size="1.27" layer="25" ratio="10">&gt;NAME</text>
-<text x="-1.905" y="10.16" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-<text x="-3.175" y="-1.27" size="1.27" layer="51" ratio="10">1</text>
-<text x="-0.635" y="-1.27" size="1.27" layer="51" ratio="10">2</text>
-<text x="1.905" y="-1.27" size="1.27" layer="51" ratio="10">3</text>
-<text x="3.175" y="2.413" size="1.27" layer="51" rot="R90">In</text>
-<text x="0.635" y="2.413" size="1.27" layer="51" rot="R90">Gnd</text>
-<text x="-1.905" y="2.413" size="1.27" layer="51" rot="R90">Out</text>
-<wire x1="6.35" y1="17.145" x2="6.35" y2="-2.54" width="0.127" layer="21"/>
-<wire x1="6.35" y1="-2.54" x2="5.715" y2="-3.175" width="0.127" layer="21"/>
-<wire x1="5.715" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
-<wire x1="-3.175" y1="-3.175" x2="-3.81" y2="-2.54" width="0.127" layer="21"/>
-<wire x1="-3.81" y1="-2.54" x2="-3.81" y2="17.145" width="0.127" layer="21"/>
-<text x="4.445" y="2.413" size="1.27" layer="52" rot="MR90">En</text>
-<wire x1="5.715" y1="17.78" x2="-3.175" y2="17.78" width="0.127" layer="21"/>
-<wire x1="6.35" y1="17.145" x2="5.715" y2="17.78" width="0.127" layer="21"/>
-<wire x1="-3.175" y1="17.78" x2="-3.81" y2="17.145" width="0.127" layer="21"/>
-<circle x="4.445" y="15.875" radius="1.27" width="0.127" layer="21"/>
-<wire x1="5.08" y1="15.875" x2="3.81" y2="15.875" width="0.127" layer="21"/>
-<wire x1="4.445" y1="15.24" x2="4.445" y2="16.51" width="0.127" layer="21"/>
 </package>
 <package name="DO214ACI">
 <description>&lt;b&gt;DIODE&lt;/b&gt;</description>
@@ -542,16 +499,16 @@ grid 2.54 mm</description>
 </package>
 <package name="RJ45">
 <description>RJ45 plastic AliExpress</description>
-<pad name="P$2" x="0" y="2.55" drill="0.6"/>
-<pad name="P$4" x="0" y="0.51" drill="0.6"/>
-<pad name="P$6" x="0" y="-1.53" drill="0.6"/>
-<pad name="P$8" x="0" y="-3.57" drill="0.6"/>
-<pad name="P$1" x="2.032" y="3.57" drill="0.6" shape="square" first="yes"/>
-<pad name="P$3" x="2.032" y="1.53" drill="0.6"/>
-<pad name="P$5" x="2.032" y="-0.51" drill="0.6"/>
-<pad name="P$7" x="2.032" y="-2.55" drill="0.6"/>
-<hole x="4.572" y="7.493" drill="2.3"/>
-<hole x="4.572" y="-7.493" drill="2.3"/>
+<pad name="P$2" x="-0.508" y="2.55" drill="0.6"/>
+<pad name="P$4" x="-0.508" y="0.51" drill="0.6"/>
+<pad name="P$6" x="-0.508" y="-1.53" drill="0.6"/>
+<pad name="P$8" x="-0.508" y="-3.57" drill="0.6"/>
+<pad name="P$1" x="1.905" y="3.57" drill="0.6" shape="square" first="yes"/>
+<pad name="P$3" x="1.905" y="1.53" drill="0.6"/>
+<pad name="P$5" x="1.905" y="-0.51" drill="0.6"/>
+<pad name="P$7" x="1.905" y="-2.55" drill="0.6"/>
+<hole x="4.445" y="7.493" drill="2.3"/>
+<hole x="4.445" y="-7.493" drill="2.3"/>
 <wire x1="-3" y1="7.55" x2="12" y2="7.55" width="0.127" layer="21"/>
 <wire x1="12" y1="7.55" x2="12" y2="4.08" width="0.127" layer="21"/>
 <wire x1="12" y1="4.08" x2="12" y2="-4.08" width="0.127" layer="21"/>
@@ -683,6 +640,75 @@ grid 2.54 mm</description>
 <wire x1="6.35" y1="-6.35" x2="6.35" y2="-4.54" width="0.127" layer="21"/>
 <circle x="3.81" y="3.175" radius="0.898025" width="0.127" layer="21"/>
 <pad name="4" x="3.81" y="0" drill="1.1" shape="long" rot="R90"/>
+<wire x1="-5.08" y1="-4.445" x2="-5.08" y2="-5.715" width="0.4064" layer="21"/>
+<wire x1="5.08" y1="-4.445" x2="5.08" y2="-5.715" width="0.4064" layer="21"/>
+</package>
+<package name="DO214AC">
+<description>&lt;b&gt;DIODE&lt;/b&gt;</description>
+<wire x1="-2.3" y1="1" x2="2.3" y2="1" width="0.254" layer="21"/>
+<wire x1="2.3" y1="1" x2="2.3" y2="-0.95" width="0.254" layer="21"/>
+<wire x1="2.3" y1="-0.95" x2="-2.3" y2="-0.95" width="0.254" layer="21"/>
+<wire x1="-2.3" y1="-0.95" x2="-2.3" y2="1" width="0.254" layer="21"/>
+<wire x1="-0.8" y1="0" x2="0.25" y2="0.75" width="0.254" layer="21"/>
+<wire x1="0.25" y1="0.75" x2="0.25" y2="-0.7" width="0.254" layer="21"/>
+<wire x1="0.25" y1="-0.7" x2="-0.8" y2="0" width="0.254" layer="21"/>
+<smd name="C" x="-2.05" y="0" dx="1.8" dy="1.7" layer="1"/>
+<smd name="A" x="2.05" y="0" dx="1.8" dy="1.7" layer="1"/>
+<text x="-2.64" y="1.286" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-2.64" y="-2.556" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<rectangle x1="-2.65" y1="-0.7" x2="-2.4" y2="0.65" layer="21"/>
+<rectangle x1="2.4" y1="-0.7" x2="2.65" y2="0.65" layer="21"/>
+<rectangle x1="-1" y1="-1.05" x2="-0.7" y2="1.05" layer="21"/>
+</package>
+<package name="MDLSTEPDOWNV02H">
+<circle x="-2.0828" y="0.1016" radius="0.254" width="0" layer="21"/>
+<pad name="1" x="0" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="2" x="2.54" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="3" x="5.08" y="0" drill="1.016" shape="long" rot="R90"/>
+<text x="-3.175" y="15.6718" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+<text x="-1.905" y="10.16" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<text x="0.635" y="2.413" size="1.27" layer="51" rot="R90">In</text>
+<text x="3.175" y="2.413" size="1.27" layer="51" rot="R90">Gnd</text>
+<text x="5.715" y="2.413" size="1.27" layer="51" rot="R90">Out</text>
+<wire x1="6.35" y1="17.145" x2="6.35" y2="-2.54" width="0.127" layer="21"/>
+<wire x1="6.35" y1="-2.54" x2="5.715" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="5.715" y1="-3.175" x2="-3.175" y2="-3.175" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="-3.175" x2="-3.81" y2="-2.54" width="0.127" layer="21"/>
+<wire x1="-3.81" y1="-2.54" x2="-3.81" y2="17.145" width="0.127" layer="21"/>
+<text x="4.445" y="2.413" size="1.27" layer="52" rot="MR90">En</text>
+<wire x1="5.715" y1="17.78" x2="-3.175" y2="17.78" width="0.127" layer="21"/>
+<wire x1="6.35" y1="17.145" x2="5.715" y2="17.78" width="0.127" layer="21"/>
+<wire x1="-3.175" y1="17.78" x2="-3.81" y2="17.145" width="0.127" layer="21"/>
+<circle x="4.445" y="15.875" radius="1.27" width="0.127" layer="21"/>
+<wire x1="5.08" y1="15.875" x2="3.81" y2="15.875" width="0.127" layer="21"/>
+<wire x1="4.445" y1="15.24" x2="4.445" y2="16.51" width="0.127" layer="21"/>
+</package>
+<package name="RJ45_V">
+<description>RJ45 plastic AliExpress</description>
+<pad name="P$2" x="0" y="-3.165" drill="0.9"/>
+<pad name="P$4" x="0" y="-0.635" drill="0.9"/>
+<pad name="P$6" x="0" y="1.905" drill="0.9"/>
+<pad name="P$8" x="0" y="4.445" drill="0.9"/>
+<pad name="P$1" x="2.54" y="-4.445" drill="0.9" shape="square" first="yes"/>
+<pad name="P$3" x="2.54" y="-1.905" drill="0.9"/>
+<pad name="P$5" x="2.54" y="0.635" drill="0.9"/>
+<pad name="P$7" x="2.54" y="3.175" drill="0.9"/>
+<hole x="8.89" y="5.715" drill="3.2"/>
+<hole x="8.89" y="-5.715" drill="3.2"/>
+<wire x1="-1.905" y1="7.62" x2="15.24" y2="7.62" width="0.127" layer="21"/>
+<wire x1="15.24" y1="7.62" x2="15.24" y2="3.81" width="0.127" layer="21"/>
+<wire x1="15.24" y1="3.81" x2="15.24" y2="-3.81" width="0.127" layer="21"/>
+<wire x1="15.24" y1="-3.81" x2="15.24" y2="-7.62" width="0.127" layer="21"/>
+<wire x1="-1.905" y1="-7.62" x2="-1.905" y2="7.62" width="0.127" layer="21"/>
+<wire x1="-1.905" y1="-7.62" x2="15.24" y2="-7.62" width="0.127" layer="21"/>
+<wire x1="15.24" y1="3.81" x2="12.7" y2="3.81" width="0.127" layer="21"/>
+<wire x1="12.7" y1="3.81" x2="12.7" y2="2.54" width="0.127" layer="21"/>
+<wire x1="12.7" y1="2.54" x2="12.7" y2="-2.54" width="0.127" layer="21"/>
+<wire x1="12.7" y1="-2.54" x2="12.7" y2="-3.81" width="0.127" layer="21"/>
+<wire x1="12.7" y1="-3.81" x2="15.24" y2="-3.81" width="0.127" layer="21"/>
+<wire x1="12.7" y1="2.54" x2="11.43" y2="2.54" width="0.127" layer="21"/>
+<wire x1="11.43" y1="2.54" x2="11.43" y2="-2.54" width="0.127" layer="21"/>
+<wire x1="11.43" y1="-2.54" x2="12.7" y2="-2.54" width="0.127" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -1023,6 +1049,21 @@ PIN-3 Output
 </gates>
 <devices>
 <device name="" package="RJ45">
+<connects>
+<connect gate="G$1" pin="1" pad="P$1"/>
+<connect gate="G$1" pin="2" pad="P$2"/>
+<connect gate="G$1" pin="3" pad="P$3"/>
+<connect gate="G$1" pin="4" pad="P$4"/>
+<connect gate="G$1" pin="5" pad="P$5"/>
+<connect gate="G$1" pin="6" pad="P$6"/>
+<connect gate="G$1" pin="7" pad="P$7"/>
+<connect gate="G$1" pin="8" pad="P$8"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="-V" package="RJ45_V">
 <connects>
 <connect gate="G$1" pin="1" pad="P$1"/>
 <connect gate="G$1" pin="2" pad="P$2"/>
@@ -4776,9 +4817,7 @@ Number of pins: &lt;b&gt;2&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <text x="-68.58" y="71.12" size="5.08" layer="97">ESP32-C3-Mini
 Minimal Quantity Lubrication
 Injection system</text>
-<text x="-66.04" y="53.34" size="2.54" layer="97">Modifications for next build:
-- GPIO9 is used for boot mode and connected to USB DTR, don't use
-</text>
+<text x="-66.04" y="53.34" size="2.54" layer="97">Modifications for next build: none</text>
 </plain>
 <instances>
 <instance part="FET2" gate="G$1" x="63.5" y="10.16"/>
