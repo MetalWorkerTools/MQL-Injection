@@ -1,4 +1,4 @@
-#define MQL_VERSION "1.2"
+#define MQL_VERSION "1.3"
 #include <Arduino.h>
 #include "clsPin.h"
 #include <U8g2lib.h>
@@ -75,12 +75,14 @@ volatile long InjectionPeriodTics = 10000 / INJECTIONFREQUENCY;
 volatile long InjectionActiveTics = 300;
 volatile long InjectionInActiveTics = InjectionPeriodTics - InjectionActiveTics;
 
+unsigned long LastResetTime = millis();
+
 Preferences FlashData;
 
 clsPin PinLed(LED_GPIO, OUTPUT, LED_ACTIVE, false, "L", "l");
 clsPin PinRotaryA(ROTARY_A_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "A", "a");
 clsPin PinRotaryB(ROTARY_B_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "B", "b");
-clsPin PinRotarySW(ROTARY_SW_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "S", "s", 2000);
+clsPin PinRotarySW(ROTARY_SW_GPIO, INPUT_PULLUP, ROTARY_ACTIVE, false, "S", "s", ROTARY_PRESS_SHORT_TIME);
 clsPin PinMist(MIST_GPIO, INPUT_PULLUP, MIST_ACTIVE, false, "M", "m");
 clsPin PinCoolant(COOLANT_GPIO, INPUT_PULLUP, COOLANT_ACTIVE, false, "C", "c");
 clsPin PinInjection(INJECTION_GPIO, OUTPUT, INJECTION_ACTIVE, false, "I", "i");
@@ -605,6 +607,10 @@ void TestPWM()
   for (;;)
     ShowStatus;
 }
+void ResetDisplay()
+{
+  OledDisplay.begin(); // InjectionSetpoint = 0;// disable injection
+}
 void setup(void)
 {
   // Serial.begin(115200);  // Can't use serial because rx/tx pins are used
@@ -615,14 +621,14 @@ void setup(void)
   SetupRotaryEncoder();
   CalculateInjectionPeriod();
   SetupInjection();
-  PinLed.Flash(); // #3 Show progress and give powersupply time to get stable
-  // Seems that pinmodes are changed after i2c is activated.
-  Wire.begin(SDA_PIN, SCL_PIN,25000); // Set the clock frequentie to 25 kHz to be able to use longer cables
+  PinLed.Flash();               // #3 Show progress and give powersupply time to get stable
+  Wire.begin(SDA_PIN, SCL_PIN); // Seems that pinmodes are changed after i2c is activated.
   PinMist.SetMode();
   PinCoolant.SetMode();
-  OledDisplay.begin(); // InjectionSetpoint = 0;// disable injection
-  Version.Show();      // Show the version
-  PinLed.Flash();      // # 4 Show progress
+  OledDisplay.setBusClock(I2C_FREQUENCY);
+  OledDisplay.begin(); 
+  Version.Show(); // Show the version
+  PinLed.Flash(); // # 4 Show progress
   // Seems that pinmodes are changed after i2c is activated.
   PinMist.SetMode();
   PinCoolant.SetMode();
@@ -633,16 +639,23 @@ void setup(void)
   PinLed.Flash(); // #6 Show progress
   // TestPWM();
 }
+void ProcessDisplayReset()
+{
+  if (DISPLAY_RESET_TIME_MS > 0)
+    if (millis() > (LastResetTime + DISPLAY_RESET_TIME_MS)) // if it is time to reset the display
+    {
+      LastResetTime = millis();
+      ResetDisplay();
+    }
+}
 void loop(void)
 {
+  ProcessDisplayReset();
   ShowStatus();
-  // PinRelay.TogglePin();
-  // delay(500);
   ProcessMistPinUpdateRequest();
   ProcessCoolantPinUpdateRequest();
   ProcessSetpointUpdateRequest();
   SaveSetpointWhenChanged();
   ProcessRotaryButtonUpdateRequest();
-  // PinLed.TogglePin();
-  delay(10); // do a small delay so back ground tasks have more time to run
+  delay(10); // do a small delay so back ground tasks have time to run
 }
